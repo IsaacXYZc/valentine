@@ -71,7 +71,7 @@ const AbsolutePositionUI = () => {
   const addNewPhrase = () => {
     updateButtonPosition();
     if (clickCounter.current > 8) return;
-    if (clickCounter.current > 4) setIsMagnetOn(true);
+    if (clickCounter.current > 3) setIsMagnetOn(true);
 
     // Resto de la lógica para agregar frases...
     let n = 0;
