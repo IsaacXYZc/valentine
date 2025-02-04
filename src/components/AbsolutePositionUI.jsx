@@ -10,7 +10,7 @@ const frasesNo = [
   "¡No puedes rechazarme, es ilegal! 🚔",
   "Eso dolió más que un Lego en el pie 😭",
   "Voy a contárselo a mi mamá 😠",
-  "¿Seguro? Última oportunidad... 👀",
+  "¿Segura? Última oportunidad... 👀",
   "No pasa nada... (mentira, sí pasa) 🥺",
   "Te perdonaré... pero nunca lo olvidaré 👁️👄👁️",
   "Esto es el inicio de mi historia de villano🦹",
@@ -38,6 +38,19 @@ const frasesSi = [
   "Te elegí a ti, Pikachu! ⚡😍",
   "Mi corazoncito está feliz gracias a ti ❤️😊",
   "¡Alerta de pareja épica! 🚨😍",
+];
+
+const noPhrases = [
+  "NO",
+  "¿Estas segura?",
+  "¿Realmente segura?",
+  "Piensalo de nuevo",
+  "Tienes otra oportunidad",
+  "Ultimo intento",
+  "No debi poner este boton",
+  "Ya rindete y di que si",
+  "Piensa en los bonitos momentos",
+  ":("
 ];
 
 const AbsolutePositionUI = () => {
@@ -74,6 +87,7 @@ const AbsolutePositionUI = () => {
   };
 
   const addNewPhrase = () => {
+    console.log("Dijo que no :c", clickCounter.current);
     updateButtonPosition();
     if (isTouchDevice ) {
       setButtonScale((prev) => prev + 1);
@@ -100,6 +114,7 @@ const AbsolutePositionUI = () => {
   };
 
   const handleAcepted = () => {
+    console.log("Dijo que sí");
     setAcepted(true);
     const newPhrases = [];
     let n;
@@ -165,9 +180,9 @@ const AbsolutePositionUI = () => {
                 </button>
                 <button
                 onClick={addNewPhrase}
-                className="bg-red-400 border-4 w-24 max-h-[50px] z-10 font-kavoon border-black px-4 py-2 rounded"
+                className="bg-red-400 border-4 min-w-24 max-h-[50px] z-10 font-kavoon border-black px-4 py-2 rounded"
               >
-                NO
+                {noPhrases[clickCounter.current]}
               </button>
               </>
         ) : (
