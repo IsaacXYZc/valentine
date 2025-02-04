@@ -185,7 +185,7 @@ const FallingText = ({
   return (
     <div
       ref={containerRef}
-      className="absolute w-full h-full top-0 cursor-pointer text-center overflow-hidden"
+      className="absolute w-full h-full top-0 text-center overflow-hidden"
       onClick={trigger === "click" ? () => setEffectStarted(true) : undefined}
       onMouseOver={trigger === "hover" ? () => setEffectStarted(true) : undefined}
     >
