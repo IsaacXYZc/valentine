@@ -106,11 +106,11 @@ const AbsolutePositionUI = () => {
     }
     clickCounter.current++;
 
-    const newPhrases = [];
-    for (let i = 0; i < n; i++) {
-      newPhrases.push(frasesNo[Math.floor(Math.random() * frasesNo.length)]);
-    }
-    setPhrases(newPhrases);
+    // const newPhrases = [];
+    // for (let i = 0; i < n; i++) {
+    //   newPhrases.push(frasesNo[Math.floor(Math.random() * frasesNo.length)]);
+    // }
+    // setPhrases(newPhrases);
   };
 
   const handleAcepted = () => {
