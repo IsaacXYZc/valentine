@@ -114,7 +114,7 @@ const FallingText = ({
     const phraseElement = document.createElement("span");
     phraseElement.innerText = phrase;
     phraseElement.style.position = "absolute";
-    phraseElement.style.padding = "1px 0px";
+    phraseElement.style.padding = "8px 0px";
     phraseElement.style.border = "0px solid";
     phraseElement.style.whiteSpace = "nowrap";
     // Puedes descomentar la siguiente línea para ver el fondo del span mientras se calcula el tamaño
