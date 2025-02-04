@@ -13,7 +13,7 @@ const FallingText = ({
   gravity = 1,
   mouseConstraintStiffness = 0.2,
   fontSize = "1rem",
-  rotationRange = [-20, 20], // ⬅ Nuevo parámetro para definir el rango de rotación
+  rotationRange = [-20, 20], // Rango de rotación en grados
   onClick,
 }) => {
   const containerRef = useRef(null);
@@ -23,24 +23,23 @@ const FallingText = ({
   const engineRef = useRef(null);
   const renderRef = useRef(null);
 
+  // Función para eliminar cuerpos de Matter.js y limpiar el estado
   const clearPhrases = () => {
     if (!engineRef.current) return;
     const { World } = Matter;
-
-    // Elimina los cuerpos físicos de Matter.js
     addedPhrases.forEach(({ body }) => {
       World.remove(engineRef.current.world, body);
     });
-
-    // Resetear el estado
     setAddedPhrases([]);
   };
 
+  // Reinicia las frases cuando cambia el resetKey
   useEffect(() => {
-    clearPhrases(); // Limpiar frases cuando resetKey cambie
-    phrases.forEach((phrase) => addPhraseToPhysics(phrase)); // Agregar nuevas frases
+    clearPhrases();
+    phrases.forEach((phrase) => addPhraseToPhysics(phrase));
   }, [resetKey]);
 
+  // Inicializa el motor, render y límites
   useEffect(() => {
     if (!effectStarted) return;
 
@@ -66,9 +65,9 @@ const FallingText = ({
       const boundaryOptions = { isStatic: true, render: { fillStyle: "transparent" } };
       World.add(engine.world, [
         Bodies.rectangle(width / 2, height + 25, width, 50, boundaryOptions), // Piso
-        Bodies.rectangle(-25, height / 2, 50, height, boundaryOptions), // Pared izquierda
-        Bodies.rectangle(width + 25, height / 2, 50, height, boundaryOptions), // Pared derecha
-        // Bodies.rectangle(width / 2, -25, width, 50, boundaryOptions), // Techo
+        Bodies.rectangle(-25, height / 2, 50, height, boundaryOptions),         // Pared izquierda
+        Bodies.rectangle(width + 25, height / 2, 50, height, boundaryOptions),    // Pared derecha
+        // Bodies.rectangle(width / 2, -25, width, 50, boundaryOptions),             // Techo
       ]);
 
       const mouse = Mouse.create(containerRef.current);
@@ -76,7 +75,6 @@ const FallingText = ({
         mouse,
         constraint: { stiffness: mouseConstraintStiffness, render: { visible: false } },
       });
-
       World.add(engine.world, mouseConstraint);
       renderRef.current.mouse = mouse;
 
@@ -86,6 +84,7 @@ const FallingText = ({
     }
   }, [effectStarted, gravity, wireframes, backgroundColor, mouseConstraintStiffness]);
 
+  // Maneja el trigger de activación
   useEffect(() => {
     if (trigger === "auto") {
       setEffectStarted(true);
@@ -104,60 +103,64 @@ const FallingText = ({
     }
   }, [trigger]);
 
+  // Agrega cada frase al mundo de Matter.js
   const addPhraseToPhysics = (phrase) => {
     if (!effectStarted || !engineRef.current) return;
 
     const { Bodies, World, Body } = Matter;
     const containerRect = containerRef.current.getBoundingClientRect();
 
+    // Crea un elemento temporal para medir la frase
     const phraseElement = document.createElement("span");
     phraseElement.innerText = phrase;
     phraseElement.style.position = "absolute";
-    phraseElement.style.padding = "4px 4px";
+    phraseElement.style.padding = "1px 0px";
     phraseElement.style.border = "0px solid";
-    // phraseElement.style.background = "black";
-
-    // phraseElement.style.fontSize = fontSize;
     phraseElement.style.whiteSpace = "nowrap";
+    // Puedes descomentar la siguiente línea para ver el fondo del span mientras se calcula el tamaño
+    // phraseElement.style.background = "black";
     document.body.appendChild(phraseElement);
-
     const rect = phraseElement.getBoundingClientRect();
     document.body.removeChild(phraseElement);
 
-    const x = Math.random() * (containerRect.width - rect.width)+10;
-    const y = 0;
+    // Posición inicial aleatoria en x y en y (puedes ajustar y si deseas otro efecto)
+    const x = Math.random() * (containerRect.width - rect.width) + rect.width / 2;
+    const y = 0; // Comienza en la parte superior
 
-    // 🎯 Rotación aleatoria dentro del rango especificado
+    // Rotación inicial aleatoria (convertida a radianes)
     const randomRotation =
       (Math.random() * (rotationRange[1] - rotationRange[0]) + rotationRange[0]) *
-      (Math.PI / 180); // Convertir a radianes
+      (Math.PI / 180);
 
+    // Crea el cuerpo físico
     const body = Bodies.rectangle(x, y, rect.width, rect.height, {
       render: { fillStyle: "transparent" },
       restitution: 0.8,
       frictionAir: 0.01,
       friction: 0.2,
     });
-
-    // Aplicar rotación inicial aleatoria
     Body.setAngle(body, randomRotation);
+
+    // **Mejora en las físicas:** Asigna velocidad y velocidad angular inicial aleatoria
+    Body.setVelocity(body, { x: (Math.random() - 0.5) * 5, y: (Math.random() - 0.5) * 2 });
+    Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.05);
 
     const color = colors[Math.floor(Math.random() * colors.length)];
 
-
-    // setTimeout(() => {
-      World.add(engineRef.current.world, body);
-      setAddedPhrases((prev) => [...prev, { phrase, body, color }]);
-      // }, Math.random() * 2000 + 1000);
+    World.add(engineRef.current.world, body);
+    setAddedPhrases((prev) => [...prev, { phrase, body, color }]);
   };
 
+  // Agrega las frases según el arreglo recibido (se puede ajustar el timing si se desea)
   useEffect(() => {
     phrases.forEach((phrase) => {
-    addPhraseToPhysics(phrase);
-
+      setTimeout(() => {
+        addPhraseToPhysics(phrase);
+      }, 1000);
     });
   }, [phrases]);
 
+  // Bucle de actualización para mover los elementos en pantalla
   useEffect(() => {
     if (!effectStarted || !engineRef.current) return;
 
@@ -175,7 +178,6 @@ const FallingText = ({
           elem.style.transform = `rotate(${body.angle}rad)`;
         }
       });
-
       Matter.Engine.update(engineRef.current);
       requestAnimationFrame(updateLoop);
     };
@@ -193,8 +195,8 @@ const FallingText = ({
         <span
           key={body.id}
           data-phrase={body.id}
-          className={`absolute select-none text-[5vw] sm:text-[2vw] md:text-[2vw] lg:text-[1.5vw]`} 
-          style={{  color }}
+          className="absolute select-none text-[4vw] sm:text-[2vw] md:text-[2vw] lg:text-[1.5vw]"
+          style={{ color }}
         >
           {phrase}
         </span>

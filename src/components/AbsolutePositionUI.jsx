@@ -76,8 +76,7 @@ const AbsolutePositionUI = () => {
   const addNewPhrase = () => {
     updateButtonPosition();
     if (isTouchDevice ) {
-      setButtonScale((prev) => prev + 2);
-      // clickCounter.current++;
+      setButtonScale((prev) => prev + 1);
     }
     if (clickCounter.current > 8) return;
     if (clickCounter.current > 3) setIsMagnetOn(true);
@@ -103,7 +102,13 @@ const AbsolutePositionUI = () => {
   const handleAcepted = () => {
     setAcepted(true);
     const newPhrases = [];
-    for (let i = 0; i < 40; i++) {
+    let n;
+    if (window.innerWidth < 768) {
+      n = 30;
+    } else {
+      n = 40;
+    }
+    for (let i = 0; i < n; i++) {
       newPhrases.push(frasesSi[Math.floor(Math.random() * frasesSi.length)]);
     }
     setPhrases(newPhrases);
@@ -114,16 +119,16 @@ const AbsolutePositionUI = () => {
       <FallingText
         phrases={phrases}
         resetKey={Acepted}
-        rotationRange={[-30, 30]}
+        rotationRange={[-10, 10]}
         trigger="auto"
-        gravity={0.4}
+        gravity={0.6}
         fontSize="1.4vw"
       />
 
       <div className=" flex flex-col items-center p-4">
         {Acepted ? (
           <>
-            <p className="text-[3rem] text-center flex flex-col items-center sm:mt-24 font-kavoon drop-shadow-[0_2.2px_1.2px_rgba(255,255,255,1)]  text-red-500">
+            <p className="text-4xl sm:text-5xl text-center flex flex-col items-center sm:mt-24 font-kavoon drop-shadow-[0_2.2px_1.2px_rgba(255,255,255,1)]  text-red-500">
               Sabia que dirias que sí
               <img
                 src="capibaras-juntos.webp"
@@ -134,7 +139,7 @@ const AbsolutePositionUI = () => {
           </>
         ) : (
           <>
-            <p className="text-5xl text-center  flex flex-col items-center sm:mt-24 font-kavoon drop-shadow-[0_2.2px_1.2px_rgba(0,0,0,1)]  text-red-500 mb-4">
+            <p className="text-3xl sm:text-5xl text-center  flex flex-col items-center sm:mt-24 font-kavoon drop-shadow-[0_2.2px_1.2px_rgba(0,0,0,1)]  text-red-500 mb-4">
               ¿Quieres ser mi San valentin?
             <img
               src="capibara.webp"
@@ -200,9 +205,6 @@ const AbsolutePositionUI = () => {
                 </button>
                 </>
         )}
-              
-               
-              
             </div>
           </>
         )}
